@@ -1,5 +1,5 @@
 1. Bagian Head dan Styling (CSS)
-Bagian ini mengatur kerangka dokumen dan tampilan visual.
+    Bagian ini mengatur kerangka dokumen dan tampilan visual.
 
 <!DOCTYPE html> & <html lang="id">: Mendefinisikan dokumen sebagai HTML5 dengan bahasa pengantar Indonesia.
 
