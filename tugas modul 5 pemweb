@@ -1,0 +1,180 @@
+<?php
+// Inisialisasi variabel untuk menampung pesan kesalahan atau data valid
+$error_pesan = "";
+$sukses = false;
+$nama = $email = $pesan = "";
+
+// 1 & 2. Memproses formnya sendiri (self-processing) dengan metode POST
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['kirim'])) {
+    
+    // Ambil data dan bersihkan spasi di awal/akhir
+    $nama_input = trim($_POST['nama_lengkap']);
+    $email_input = trim($_POST['alamat_email']);
+    $pesan_input = trim($_POST['pesan_komentar']);
+
+    // 3. Validasi Sisi Server: Pastikan tidak ada kolom yang kosong
+    if (empty($nama_input) || empty($email_input) || empty($pesan_input)) {
+        $error_pesan = "Semua kolom input wajib diisi! Tidak boleh ada yang kosong.";
+    } else {
+        // Jika lolos validasi, bersihkan dengan htmlspecialchars untuk mencegah XSS
+        $nama = htmlspecialchars($nama_input);
+        $email = htmlspecialchars($email_input);
+        $pesan = htmlspecialchars($pesan_input);
+        $sukses = true;
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Buku Tamu Digital STITEK Bontang</title>
+    <!-- Desain dan Styling dengan CSS Internal -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 40px auto;
+            max-width: 600px;
+            padding: 20px;
+        }
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        input[type="submit"] {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 5px solid #721c24;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 5px solid #155724;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .result-table td {
+            padding: 8px;
+            vertical-align: top;
+        }
+        .result-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- HEADER -->
+        <h2>Buku Tamu Digital STITEK Bontang</h2>
+        
+        <!-- Menampilkan Pesan Kesalahan jika Validasi Gagal -->
+        <?php if (!empty($error_pesan)): ?>
+            <div class="alert-error"><?php echo $error_pesan; ?></div>
+        <?php endif; ?>
+
+        <!-- FORM INPUT -->
+        <form method="POST" action="">
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" name="nama_lengkap" value="<?php echo isset($_POST['nama_lengkap']) ? htmlspecialchars($_POST['nama_lengkap']) : ''; ?>">
+            </div>
+            
+            <div class="form-group">
+                <label>Alamat Email</label>
+                <input type="email" name="alamat_email" value="<?php echo isset($_POST['alamat_email']) ? htmlspecialchars($_POST['alamat_email']) : ''; ?>">
+            </div>
+            
+            <div class="form-group">
+                <label>Pesan / Komentar</label>
+                <textarea name="pesan_komentar" rows="4"><?php echo isset($_POST['pesan_komentar']) ? htmlspecialchars($_POST['pesan_komentar']) : ''; ?></textarea>
+            </div>
+            
+            <input type="submit" name="kirim" value="Kirim Pesan">
+        </form>
+    </div>
+
+    <!-- 4. AREA TAMPILAN DATA (Hanya muncul jika semua data VALID) -->
+    <?php if ($sukses): ?>
+        <div class="card" style="border-top: 4px solid #2ecc71;">
+            <div class="alert-success">Terima kasih! Pesan Anda telah berhasil dikirim.</div>
+            <h3 style="color: #2c3e50; margin-top: 0;">Data Buku Tamu Terbaru:</h3>
+            
+            <table class="result-table">
+                <tr>
+                    <td>Nama Lengkap</td>
+                    <td>: <?php echo $nama; ?></td>
+                </tr>
+                <tr>
+                    <td>Alamat Email</td>
+                    <td>: <?php echo $email; ?></td>
+                </tr>
+                <tr>
+                    <td>Pesan / Komentar</td>
+                    <td>: <?php echo nl2br($pesan); ?></td>
+                </tr>
+            </table>
+        </div>
+    <?php endif; ?>
+
+</body>
+</html>
