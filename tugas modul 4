@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Toko Elektronik Cepat - Tugas Akhir</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: sans-serif; }
+        .product-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .slideshow-container { position: relative; text-align: center; background: #eaedd0; border-radius: 8px; padding: 10px; }
+        .slideshow-img { max-width: 100%; height: 250px; object-fit: contain; border-radius: 5px; }
+        .list-group-item { cursor: pointer; transition: all 0.2s; }
+        .list-group-item:hover { background-color: #e9ecef; }
+        .active-product { background-color: #0d6efd !important; color: white !important; }
+        #struk-output { display: none; background: #fff3cd; border: 2px dashed #ffc107; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-dark shadow mb-4">
+        <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center py-2">
+            <span class="navbar-brand mb-0 h1 fw-bold text-warning">⚡ Toko Elektronik Cepat</span>
+            <span id="waktu-transaksi" class="text-white font-monospace bg-secondary px-3 py-1 rounded small"></span>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="row g-4">
+            
+            <div class="col-lg-8">
+                <div class="product-card">
+                    <h4 class="fw-bold mb-3">Display Produk</h4>
+                    
+                    <div class="slideshow-container mb-3">
+                        <img id="slideshow-image" src="" alt="Produk" class="slideshow-img">
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-dark me-1" onclick="gantiGambar(-1)">◀ Previous</button>
+                            <button class="btn btn-sm btn-dark" onclick="gantiGambar(1)">Next ▶</button>
+                        </div>
+                    </div>
+                    
+                    <h3 id="display-nama" class="fw-bold text-dark mt-3"></h3>
+                    <h4 id="display-harga" class="text-primary fw-semibold mb-4"></h4>
+                    
+                    <div class="bg-light p-3 rounded border">
+                        <h5 class="fw-bold mb-3 text-secondary">Form Pemesanan</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nama Pemesan</label>
+                                <input type="text" id="input-nama" class="form-control" placeholder="Masukkan nama Anda">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Jumlah Pesan</label>
+                                <input type="number" id="input-jumlah" class="form-control" min="1" value="1">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold">Kode Promo</label>
+                                <input type="text" id="input-promo" class="form-control" placeholder="Contoh: DISKON10">
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button class="btn btn-success w-100 fw-bold" onclick="prosesPemesanan()">🛒 Pesan Sekarang</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="product-card h-100">
+                    <h4 class="fw-bold mb-3">Daftar Produk</h4>
+                    <p class="text-muted small">Pilih produk di bawah untuk mengubah display utama:</p>
+                    <div id="daftar-produk" class="list-group"></div>
+                    
+                    <div id="struk-output" class="p-3 mt-4">
+                        <h5 class="fw-bold text-center border-bottom border-warning pb-2 mb-3">🧾 STRUK PESANAN</h5>
+                        <div class="small">
+                            <div class="d-flex justify-content-between"><span>Order ID:</span> <b id="out-order-id" class="text-danger"></b></div>
+                            <div class="d-flex justify-content-between"><span>Pemesan:</span> <b id="out-pemesan"></b></div>
+                            <div class="d-flex justify-content-between"><span>Produk:</span> <b id="out-produk"></b></div>
+                            <div class="d-flex justify-content-between"><span>Jumlah:</span> <b id="out-jumlah"></b></div>
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between"><span>Subtotal:</span> <span id="out-subtotal"></span></div>
+                            <div class="d-flex justify-content-between text-success"><span>Potongan (Diskon):</span> <span id="out-potongan"></span></div>
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between h6 fw-bold text-dark"><span>Total Akhir:</span> <span id="out-total"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Array Data Produk (Minimal 3 Produk dengan Nama, Harga, dan Multi-Gambar)
+        var produkData = [
+            {
+                nama: "Laptop ASUS ROG Zephyrus",
+                harga: 18500000,
+                gambar: [
+                    "https://placehold.co/500x300/2c3e50/ffffff?text=ASUS+ROG+Depan",
+                    "https://placehold.co/500x300/34495e/ffffff?text=ASUS+ROG+Samping",
+                    "https://placehold.co/500x300/7f8c8d/ffffff?text=ASUS+ROG+Keyboard"
+                ]
+            },
+            {
+                nama: "Smartphone Samsung Galaxy S24",
+                harga: 13900000,
+                gambar: [
+                    "https://placehold.co/500x300/2980b9/ffffff?text=Samsung+S24+Front",
+                    "https://placehold.co/500x300/3498db/ffffff?text=Samsung+S24+Back"
+                ]
+            },
+            {
+                nama: "Keyboard Mechanical Keychron K2",
+                harga: 1450000,
+                gambar: [
+                    "https://placehold.co/500x300/16a085/ffffff?text=Keychron+K2+Layout",
+                    "https://placehold.co/500x300/1abc9c/000000?text=Keychron+K2+Switches"
+                ]
+            }
+        ];
+
+        // State Indeks Global
+        var produkAktifIndex = 0;
+        var gambarAktifIndex = 0;
+
+        // --- 1. LOGIKA JAM DIGITAL & TANGGAL DINAMIS (Praktikum 10) ---
+        function updateWaktu() {
+            var sekarang = new Date();
+            var opsi = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            var tanggalStr = sekarang.toLocaleDateString('id-ID', opsi);
+            
+            var jam = sekarang.getHours().toString().padStart(2, '0');
+            var menit = sekarang.getMinutes().toString().padStart(2, '0');
+            var detik = sekarang.getSeconds().toString().padStart(2, '0');
+            
+            document.getElementById("waktu-transaksi").innerText = tanggalStr + " | " + jam + ":" + menit + ":" + detik;
+        }
+        setInterval(updateWaktu, 1000);
+        updateWaktu(); // Panggil instan di awal
+
+        // --- 3. LOGIKA MERENDER DAFTAR PRODUK (Praktikum 4 - Perulangan) ---
+        function renderDaftarProduk() {
+            var container = document.getElementById("daftar-produk");
+            container.innerHTML = ""; // Reset kontainer
+
+            for (let i = 0; i < produkData.length; i++) {
+                // Memformat harga ke Rupiah
+                var hargaFormat = "Rp " + produkData[i].harga.toLocaleString('id-ID');
+                
+                // Set kelas aktif untuk item yang sedang dipilih
+                var kelasAktif = (i === produkAktifIndex) ? " active-product" : "";
+                
+                container.innerHTML += `
+                    <div class="list-group-item p-3 d-flex justify-content-between align-items-center${kelasAktif}" onclick="pilihProduk(${i})">
+                        <div>
+                            <h6 class="mb-1 fw-bold">${produkData[i].nama}</h6>
+                            <small class="${i === produkAktifIndex ? 'text-white-50' : 'text-muted'}">${hargaFormat}</small>
+                        </div>
+                        <span class="badge bg-secondary rounded-pill">Lihat</span>
+                    </div>`;
+            }
+        }
+
+        // Fungsi ketika item produk pada daftar diklik
+        function pilihProduk(index) {
+            produkAktifIndex = index;
+            gambarAktifIndex = 0; // Reset tampilan ke gambar pertama
+            updateDisplayUtama();
+            renderDaftarProduk(); // Re-render untuk memindahkan tanda aktif
+        }
+
+        // --- 2 & 11. LOGIKA UPDATE DISPLAY & SLIDESHOW GAMBAR ---
+        function updateDisplayUtama() {
+            var produk = produkData[produkAktifIndex];
+            
+            // Set data teks nama dan harga ke DOM
+            document.getElementById("display-nama").innerText = produk.nama;
+            document.getElementById("display-harga").innerText = "Rp " + produk.harga.toLocaleString('id-ID');
+            
+            // Panggil fungsi visualisasi slideshow gambar
+            tampilkanGambarSlideshow();
+        }
+
+        function tampilkanGambarSlideshow() {
+            var produk = produkData[produkAktifIndex];
+            document.getElementById("slideshow-image").src = produk.gambar[gambarAktifIndex];
+        }
+
+        function gantiGambar(arah) {
+            var produk = produkData[produkAktifIndex];
+            gambarAktifIndex += direction = arah;
+
+            // Logika sirkular carousel indeks gambar
+            if (gambarAktifIndex >= produk.gambar.length) {
+                gambarAktifIndex = 0;
+            }
+            if (gambarAktifIndex < 0) {
+                gambarAktifIndex = produk.gambar.length - 1;
+            }
+            tampilkanGambarSlideshow();
+        }
+
+        // --- 5. LOGIKA FORM VALIDASI, PERHITUNGAN, & GENERATE STRUK ---
+        function prosesPemesanan() {
+            var nama = document.getElementById("input-nama").value.trim();
+            var jumlah = parseInt(document.getElementById("input-jumlah").value);
+            var kodePromo = document.getElementById("input-promo").value.trim();
+            
+            // a. Validasi Form (Praktikum 5)
+            if (nama === "") {
+                alert("❌ Gagal: Nama Pemesan tidak boleh kosong!");
+                return;
+            }
+            if (isNaN(jumlah) || jumlah <= 0) {
+                alert("❌ Gagal: Jumlah pesan harus berupa angka dan lebih dari 0!");
+                return;
+            }
+
+            // b. Perhitungan Total & Logika Percabangan Promo (Praktikum 3 & Objek String 8)
+            var produk = produkData[produkAktifIndex];
+            var subtotal = produk.harga * jumlah;
+            var potongan = 0;
+
+            // Mengubah input kode promo ke Huruf Kapital (.toUpperCase())
+            if (kodePromo.toUpperCase() === "DISKON10") {
+                potongan = subtotal * 0.10; // Potongan diskon 10%
+            }
+
+            var totalAkhir = subtotal - potongan;
+
+            // c. Generate Order ID Unik (Praktikum 9 - Objek Math)
+            // Menghasilkan nilai acak 5 digit antara 10000 - 99999
+            var angkaAcak = Math.floor(Math.random() * 90000) + 10000;
+            var orderId = "INV-" + angkaAcak;
+
+            // d. Tampilkan Output Ringkasan / Struk Pesanan ke DOM
+            document.getElementById("out-order-id").innerText = orderId;
+            document.getElementById("out-pemesan").innerText = nama;
+            document.getElementById("out-produk").innerText = produk.nama;
+            document.getElementById("out-jumlah").innerText = jumlah + " unit";
+            document.getElementById("out-subtotal").innerText = "Rp " + subtotal.toLocaleString('id-ID');
+            document.getElementById("out-potongan").innerText = "- Rp " + potongan.toLocaleString('id-ID');
+            document.getElementById("out-total").innerText = "Rp " + totalAkhir.toLocaleString('id-ID');
+
+            // Munculkan container struk secara visual (style.display)
+            document.getElementById("struk-output").style.display = "block";
+            
+            // Notifikasi sukses
+            alert("🎉 Pemesanan Berhasil Diperosess!\nID Pesanan Anda: " + orderId);
+        }
+
+        // Inisialisasi awal aplikasi saat halaman pertama kali dibuka
+        updateDisplayUtama();
+        renderDaftarProduk();
+    </script>
+</body>
+</html>
