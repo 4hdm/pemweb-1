@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tugas Praktikum - Pengenalan CSS</title>
+  <style>
+    /* ==========================================================================
+       4. TAMBAHAN (PENGATURAN GLOBAL)
+       ========================================================================== */
+    * {
+      /* 4.b Pastikan seluruh elemen menggunakan box-sizing: border-box */
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ==========================================================================
+       1. TAMPILAN UMUM
+       ========================================================================== */
+    body {
+      /* 1.a Background halaman berwarna biru muda (#add8e6) */
+      background-color: #add8e6;
+      /* 1.b Gunakan font Arial atau sans-serif untuk seluruh halaman */
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 1.c Judul Utama (<h1>) "Praktikum CSS" berwarna putih dan berukuran besar (~40px) */
+    .judul-utama {
+      color: #ffffff;
+      font-size: 40px;
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    /* 1.d Paragraf (<p>) latar belakang abu-abu muda (#d3d3d3), teks hitam, padding cukup */
+    .deskripsi-paragraf {
+      background-color: #d3d3d3;
+      color: #000000;
+      padding: 15px 20px;
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 30px;
+      line-height: 1.6;
+      /* 4.a Berikan border-radius agar sudutnya membulat */
+      border-radius: 8px;
+    }
+
+    /* ==========================================================================
+       2. LAYOUT KOTAK (BOX) & CSS GRID
+       ========================================================================== */
+    /* 2.a & 2.e Container dibatasi maksimal lebar 800px dan diposisikan di tengah */
+    .grid-container {
+      display: grid;
+      /* 2.d Menggunakan CSS Grid dengan 3 kolom yang sama besar */
+      grid-template-columns: repeat(3, 1fr);
+      /* 2.d Jarak antar kotak sebesar 20px */
+      gap: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    /* 2.b Karakteristik dasar untuk setiap kotak (.box1, .box2, .box3) */
+    .box {
+      /* 2.b Border hitam tebal 2px, padding 10px, dan tinggi 15px */
+      border: 2px solid #000000;
+      padding: 10px;
+      height: 150px;
+      
+      /* Sentuhan estetika teks di dalam kotak */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      color: #333333;
+      font-size: 18px;
+      
+      /* 4.a Berikan border-radius agar sudutnya membulat */
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    /* 2.c Pewarnaan masing-masing kelas kotak */
+    .box1 {
+      background-color: #ff9999; /* 2.c.1 merah muda */
+    }
+
+    .box2 {
+      background-color: #99ff99; /* 2.c.2 hijau muda */
+    }
+
+    .box3 {
+      background-color: #9999ff; /* 2.c.3 biru muda */
+    }
+
+    /* ==========================================================================
+       3. RESPONSIVE DESIGN (MEDIA QUERIES)
+       ========================================================================== */
+    
+    /* 3.a Ketika lebar layar kurang dari atau sama dengan 768px (Tablet) */
+    @media only screen and (max-width: 768px) {
+      .grid-container {
+        /* Container berubah menjadi 2 kolom */
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* 3.b & 3.c Ketika lebar layar kurang dari atau sama dengan 480px (Smartphone) */
+    @media only screen and (max-width: 480px) {
+      /* 3.c Ukuran font judul diperkecil menjadi 28px */
+      .judul-utama {
+        font-size: 28px;
+      }
+
+      /* 3.c Padding paragraf dikurangi agar proporsional */
+      .deskripsi-paragraf {
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+
+      .grid-container {
+        /* 3.b Container berubah menjadi 1 kolom */
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      /* 3.c Tinggi kotak menjadi 120px */
+      .box {
+        height: 120px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="judul-utama">Praktikum CSS</h1>
+  
+  <p class="deskripsi-paragraf">
+    Selamat datang di halaman penyelesaian Tugas Praktikum Web. Halaman ini dirancang secara terintegrasi menggunakan implementasi CSS modern meliputi sistem Layout Dua Dimensi (CSS Grid), Manajemen Box Model yang presisi, serta optimasi Aturan Media Queries guna menjamin antarmuka yang sepenuhnya responsif di berbagai perangkat.
+  </p>
+
+  <div class="grid-container">
+    <div class="box box1">Kotak 1 (.box1)</div>
+    <div class="box box2">Kotak 2 (.box2)</div>
+    <div class="box box3">Kotak 3 (.box3)</div>
+  </div>
+
+</body>
+</html>
